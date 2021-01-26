@@ -21,6 +21,12 @@
     "bluebird": "^3.7.2",
     "cross-env": "^7.0.3",
     "dotenv-safe": "^8.2.0",
+    "module-alias": "^2.2.2",
     "mongoose": "^5.11.13"
+  },
+  "_moduleAliases": {
+    "@root": ".",
+    "@src": "./src",
+    "@config":"./src/config"
   }
 }

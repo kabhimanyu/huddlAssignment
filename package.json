@@ -25,7 +25,9 @@
     "cross-env": "^7.0.3",
     "dotenv-safe": "^6.0.0",
     "express": "^4.17.1",
+    "express-validation": "^3.0.6",
     "helmet": "^4.4.1",
+    "http-status": "^1.5.0",
     "method-override": "^3.0.0",
     "module-alias": "^2.2.2",
     "mongoose": "^5.11.13"
@@ -33,6 +35,11 @@
   "_moduleAliases": {
     "@root": ".",
     "@src": "./src",
-    "@config": "./src/config"
+    "@config": "./src/config",
+    "@middlewares": "./src/api/middlewares",
+    "@controllers": "./src/api/controllers",
+    "@models": "./src/api/models",
+    "@routes": "./src/api/routes",
+    "@utils": "./src/api/utils"
   }
 }

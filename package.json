@@ -1,0 +1,20 @@
+{
+  "name": "huddlassignment",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kabhimanyu/huddlAssignment.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kabhimanyu/huddlAssignment/issues"
+  },
+  "homepage": "https://github.com/kabhimanyu/huddlAssignment#readme"
+}

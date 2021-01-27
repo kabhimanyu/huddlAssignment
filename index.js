@@ -7,3 +7,5 @@ const app = require('@config/express')
 mongoose.connect();
 
 app.listen(port, () => logger.info(`server started on port ${port} (${env})`));
+
+module.exports = app;

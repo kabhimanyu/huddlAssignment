@@ -31,3 +31,45 @@ exports.deleteChildComments = async (req, res, next) => {
       next(new APIError(error));
    }
 }
+
+exports.updateReactionCount = async (req, res, next) => {
+   try {
+      const { reaction } = req.locals;
+      const { commentId } = req.params;
+      let options = {};
+      if (reaction.oldReaction) {
+         if (reaction.oldReaction == "+1") {
+            options = { "$inc": { "reactions.+1": -1 } }
+         } else if (reaction.oldReaction == "like") {
+            options = { "$inc": { "reactions.like": -1 } }
+         } else if (reaction.oldReaction == "dislike") {
+            options = { "$inc": { "reactions.dislike": -1 } }
+         } else {
+            return next(new APIError({
+               message: 'Invalid Reaction',
+               status: httpStatus.BAD_REQUEST
+            }))
+         }
+         await Comment.updateOne({ _id: commentId }, options)
+      }
+      if (reaction.reaction) {
+         if (reaction.reaction && reaction.reaction == "+1") {
+            options = { "$inc": { "reactions.+1": +1 } }
+         } else if (reaction.reaction && reaction.reaction == "like") {
+            options = { "$inc": { "reactions.like": +1 } }
+         } else if (reaction.reaction && reaction.reaction == "dislike") {
+            options = { "$inc": { "reactions.dislike": +1 } }
+         } else {
+            return next(new APIError({
+               message: 'Invalid Reaction',
+               status: httpStatus.BAD_REQUEST
+            }))
+         }
+         await Comment.updateOne({ _id: commentId }, options)
+      }
+
+      return next();
+   } catch (error) {
+      next(new APIError(error));
+   }
+}

@@ -3,40 +3,31 @@ const httpStatus = require('http-status');
 const { omitBy, isNil, pick } = require('lodash');
 const APIError = require('@utils/APIError');
 
-const commentsSchema = new mongoose.Schema({
-   text: {
+const reactionsSchema = new mongoose.Schema({
+   reaction: {
       type: String,
-      required: true
+      required: true,
+      enum: ["+1", "like", "dislike"]
    },
-   wall: {
+   comment: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      index: true,
+      ref: 'Reactions',
    },
    author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      index: true,
       required: true,
    },
-   parent: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Comment',
-      index: true,
-   },
-   reactions: {
-      "+1": { type: Number, default: 0 },
-      "like": { type: Number, default: 0 },
-      "dislike": { type: Number, default: 0 }
-   }
 }, {
    timestamps: true,
 });
 
-commentsSchema.method({
+reactionsSchema.index({ author: 1, comment: 1 }, { unique: true });
+
+reactionsSchema.method({
    transform() {
       const transformed = {};
-      const fields = ['id', 'text', 'wall', 'author', 'parent', 'reactions', 'createdAt'];
+      const fields = ['id', 'reaction', 'comment', 'author', 'createdAt'];
 
       fields.forEach((field) => {
          if (field == 'author' && this[field]["firstName"]) {
@@ -50,7 +41,7 @@ commentsSchema.method({
    },
 })
 
-commentsSchema.statics = {
+reactionsSchema.statics = {
 
    async get(id) {
       try {
@@ -62,7 +53,7 @@ commentsSchema.statics = {
             return comment;
          }
          throw new APIError({
-            message: 'Comment does not exist',
+            message: 'Reactions does not exist',
             status: httpStatus.NOT_FOUND,
          });
       } catch (error) {
@@ -70,18 +61,17 @@ commentsSchema.statics = {
       }
    },
 
-   async list({ page = 1, perPage = 30, wall, parent }) {
-      let options = omitBy({ wall, parent }, isNil);
+   async list({ page = 1, perPage = 30, comment, reaction }) {
+      let options = omitBy({ comment, reaction }, isNil);
 
-      let comments = await this.find(options)
+      let reactions = await this.find(options)
          .populate('author')
          .skip(perPage * (page * 1 - 1))
          .limit(perPage * 1)
          .exec();
-      return comments;
+      return reactions;
 
    },
 };
 
-
-module.exports = mongoose.model('Comment', commentsSchema);
+module.exports = mongoose.model('Reactions', reactionsSchema);

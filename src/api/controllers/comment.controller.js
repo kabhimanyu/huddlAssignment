@@ -81,3 +81,11 @@ exports.listSubComments = async (req, res, next) => {
       next(error);
    }
 };
+
+exports.addReaction = (req, res, next) => {
+   try {
+      res.status(httpStatus.OK).json({ message: 'Reaction saved' })
+   } catch (error) {
+      next(error);
+   }
+}

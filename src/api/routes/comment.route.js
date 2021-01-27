@@ -2,6 +2,8 @@ const express = require('express');
 const controller = require('@controllers/comment.controller');
 const { authorize } = require('@middlewares/auth');
 const service = require('@services/comment.service');
+const reactionService = require('@services/reaction.service');
+
 const router = express.Router();
 
 /**
@@ -169,5 +171,9 @@ router
  * @apiError (Unauthorized 401)  Unauthorized  Only authenticated comment can access the data
  */
    .get(authorize(), controller.listSubComments);
+
+router
+   .route('/:commentId/reaction')
+   .post(authorize(), reactionService.addReaction, service.updateReactionCount, controller.addReaction)
 
 module.exports = router;

@@ -1,6 +1,7 @@
 const httpStatus = require('http-status');
 const { omit, assign } = require('lodash');
 const Comment = require('@models/comment.model');
+const APIError = require('@utils/APIError');
 
 exports.load = async (req, res, next, id) => {
    try {
@@ -18,6 +19,12 @@ exports.create = async (req, res, next) => {
    try {
       const { _id } = req.user;
       const { text, wall } = req.body;
+      if (!text || text.length < 1) {
+         return next(new APIError({
+            status: httpStatus.BAD_REQUEST,
+            message: 'Comment cannot be empty'
+         }))
+      }
       const comment = new Comment({ text, wall: wall ? wall : _id, author: _id });
       const savedComment = await comment.save();
       res.status(httpStatus.CREATED);

@@ -2,7 +2,6 @@ const request = require('supertest');
 const httpStatus = require('http-status');
 const { expect } = require('chai');
 const sinon = require('sinon');
-const moment = require('moment-timezone');
 const app = require('../../../../index');
 const User = require('../../models/user.model');
 
@@ -21,10 +20,10 @@ describe('Authentication API', () => {
       };
 
       user = {
-         email: 'testuser@gmail.com',
+         email: 'yoda@gmail.com',
          password: 'pass1234',
-         firstName: 'test',
-         lastName: 'user'
+         firstName: 'yoda',
+         lastName: 'yoda'
       };
 
       await User.deleteMany({});

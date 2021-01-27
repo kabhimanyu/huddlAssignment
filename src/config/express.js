@@ -5,6 +5,8 @@ const helmet = require('helmet');
 const cors = require('cors');
 const methodOverride = require('method-override');
 const error = require('@middlewares/error');
+const passport = require('passport');
+const strategies = require('./passport');
 const routes = require('@routes');
 
 const app = express();
@@ -19,6 +21,8 @@ app.use(methodOverride());
 app.use(helmet());
 
 app.use(cors());
+
+passport.use('jwt', strategies.jwt);
 
 app.use('/v1', routes)
 

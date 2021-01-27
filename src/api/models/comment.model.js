@@ -65,8 +65,8 @@ commentsSchema.statics = {
       }
    },
 
-   async list({ page = 1, perPage = 30, wall }) {
-      let options = omitBy({ wall }, isNil);
+   async list({ page = 1, perPage = 30, wall, parent }) {
+      let options = omitBy({ wall, parent }, isNil);
 
       let comments = await this.find(options)
          .populate('author')

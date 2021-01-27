@@ -1,7 +1,7 @@
 const express = require('express');
 const controller = require('@controllers/comment.controller');
 const { authorize } = require('@middlewares/auth');
-
+const service = require('@services/comment.service');
 const router = express.Router();
 
 /**
@@ -13,8 +13,8 @@ router.param('commentId', controller.load);
 router
    .route('/')
    /**
-    * @api {get} v1/comment List Comments
-    * @apiDescription Get a list of comment
+    * @api {get} v1/comment List Comments for Logged in users wall
+    * @apiDescription Get a List Comments for Logged in users wall
     * @apiVersion 1.0.0
     * @apiName ListComments
     * @apiGroup Comment
@@ -101,7 +101,6 @@ router
     *
     * @apiError (Bad Request 400)  ValidationError  Some parameters may contain invalid values
     * @apiError (Unauthorized 401) Unauthorized Only authenticated comment can modify the data
-    * @apiError (Forbidden 403)    Forbidden    Only user with same id or admins can modify the data
     * @apiError (Not Found 404)    NotFound     Comment does not exist
     */
    .patch(authorize(), controller.update)
@@ -121,7 +120,7 @@ router
     * @apiError (Forbidden 403)    Forbidden     Only user with same id can delete the data
     * @apiError (Not Found 404)    NotFound      Comment does not exist
     */
-   .delete(authorize(), controller.remove);
+   .delete(authorize(), service.validateCanDelete, service.deleteChildComments, controller.remove);
 
 router
    .route('/:commentId/reply')
@@ -150,5 +149,25 @@ router
     */
    .post(authorize(), controller.reply)
 
+router
+   .route('/:commentId/subComments')
+   /**
+ * @api {get} v1/comment List Comments for Logged in users wall
+ * @apiDescription Get a List Comments for Logged in users wall
+ * @apiVersion 1.0.0
+ * @apiName ListComments
+ * @apiGroup Comment
+ * @apiPermission admin
+ *
+ * @apiHeader {String} Authorization   User's access token
+ *
+ * @apiParam  {Number{1-}}         [page=1]     List page
+ * @apiParam  {Number{1-100}}      [perPage=1]  Comments per page
+ *
+ * @apiSuccess {Object[]} List of comment.
+ *
+ * @apiError (Unauthorized 401)  Unauthorized  Only authenticated comment can access the data
+ */
+   .get(authorize(), controller.listSubComments);
 
 module.exports = router;

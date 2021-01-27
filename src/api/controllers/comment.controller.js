@@ -17,9 +17,8 @@ exports.get = (req, res) => res.json(req.locals.comment.transform());
 exports.create = async (req, res, next) => {
    try {
       const { _id } = req.user;
-      req.body.author = _id;
-      assign(req.body, { author: _id, wall: req.body.wall ? req.body.wall : _id });
-      const comment = new Comment(req.body);
+      const { text, wall } = req.body;
+      const comment = new Comment({ text, wall: wall ? wall : _id, author: _id });
       const savedComment = await comment.save();
       res.status(httpStatus.CREATED);
       res.json(savedComment.transform());
@@ -29,9 +28,8 @@ exports.create = async (req, res, next) => {
 };
 
 exports.update = (req, res, next) => {
-   const ommitRole = req.locals.comment.role !== 'admin' ? 'role' : '';
-   const updatedComment = omit(req.body, ommitRole);
-   const comment = Object.assign(req.locals.comment, updatedComment);
+   const { text } = req.body;
+   const comment = Object.assign(req.locals.comment, { text });
 
    comment.save()
       .then(savedComment => res.json(savedComment.transform()))
@@ -41,7 +39,7 @@ exports.update = (req, res, next) => {
 exports.list = async (req, res, next) => {
    try {
       const { _id } = req.user;
-      req.query.wall = _id;
+      assign(req.query, { wall: _id });
       const comments = await Comment.list(req.query);
       const transformedComments = comments.map(comment => comment.transform());
       res.json(transformedComments);
@@ -71,3 +69,15 @@ exports.reply = async (req, res, next) => {
       next(error);
    }
 }
+
+exports.listSubComments = async (req, res, next) => {
+   try {
+      const { commentId } = req.params;
+      assign(req.query, { parent: commentId });
+      const comments = await Comment.list(req.query);
+      const transformedComments = comments.map(comment => comment.transform());
+      res.json(transformedComments);
+   } catch (error) {
+      next(error);
+   }
+};

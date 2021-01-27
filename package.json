@@ -50,6 +50,7 @@
     "@controllers": "./src/api/controllers",
     "@models": "./src/api/models",
     "@routes": "./src/api/routes",
-    "@utils": "./src/api/utils"
+    "@utils": "./src/api/utils",
+    "@services": "./src/api/services"
   }
 }

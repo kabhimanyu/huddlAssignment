@@ -9,7 +9,7 @@
     "dev": "nodemon ./index.js",
     "test": "cross-env NODE_ENV=test nyc --reporter=html --reporter=text mocha --timeout 20000 --exit --recursive src/api/tests",
     "docs": "apidoc -i src -o docs",
-    "docker": "cross-env NODE_ENV=production pm2-docker start ./index.js",
+    "docker": "cross-env NODE_ENV=production pm2-docker start ./index.js"
 
   },
   "repository": {
